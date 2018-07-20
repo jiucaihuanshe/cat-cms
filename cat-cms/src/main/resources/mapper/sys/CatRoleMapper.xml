@@ -5,4 +5,10 @@
 	<select id="findPageObjects" resultType="CatRole">
 		select * from cat_roles
 	</select>
+	<delete id="deleteObject">
+		delete from cat_roles where id in
+		<foreach collection="ids" open="(" close=")" separator="," item="item">
+		${item}
+		</foreach>
+	</delete>
 </mapper>

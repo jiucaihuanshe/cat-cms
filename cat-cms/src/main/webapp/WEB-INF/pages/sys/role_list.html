@@ -5,7 +5,7 @@
 				<h3 class="box-title">角色管理</h3>
 
 				<div class="box-tools">
-					<div class="input-group input-group-sm" style="width: 150px;">
+					<div class="input-group input-group-sm" style="width: 300px;">
 						<input type="text" name="table_search"
 							class="form-control pull-right" placeholder="Search">
 
@@ -13,6 +13,7 @@
 							<button type="submit" class="btn btn-default">
 								<i class="fa fa-search"></i>
 							</button>
+							<button type="button" class="btn btn-default btn-delete">删除</button>
 						</div>
 					</div>
 				</div>
@@ -42,7 +43,42 @@
 	$(function(){
 		//页面加载完成以后，异步加载角色信息
 		doGetObjects();
+		//页面加载完成以后，在对应的删除按钮上注册click事件
+		//在.input-group-btn标识的div元素中查找包含class为btn-delete的元素，然后在此元素
+		//上注册一个click事件，点击此元素执行doDeleteObject方法。
+		$(".input-group-btn").on("click",".btn-delete",doDeleteObject);
 	});
+	function getCheckedIds(){
+		var checkedIds = "";
+		//获取所有tbody中名字为checkedId的input元素
+		//迭代这些input元素
+		$("tbody input[name='checkedId']").each(function(){
+			//假如这个input的checked属性值为true
+			if($(this).prop("checked")){
+				if(checkedIds.lenght==0){
+					checkedIds += $(this).val();
+				}else{
+					checkedIds += ","+$(this).val();
+				}
+			}
+		});
+		return checkedIds;
+	}
+	function doDeleteObject(){
+		//1.获取选中角色的id
+		var checkedIds = getCheckedIds();
+		if(checkedIds==0){
+			alert("请选择一个");
+			return;
+		}
+		//2.将这些id值异步传输到服务端,执行删除操作
+		var url = "role/doDeleteObject.do";
+		var params = {"checkedIds":checkedIds};
+		$.post(url,params,function(result){
+			alert(result);
+			doGetObjects();
+		});
+	}
 	function doGetObjects(){
 		var url = "role/doFindPageObjects.do";
 		var params = {pageCurrent:1};
@@ -56,12 +92,14 @@
 	function setTableBodyRows(result){
 		//debugger;
 		var tBody = $("#tbodyId");
+		//清空原有数据
+		tBody.empty();
 		//迭代结果集
 		for(var i in result){//循环一次取一行记录
 			//构建tr对象
 			var tr = $("<tr></tr>");
 			//构建td对象
-			var tds = "<td>"+result[i].id+"</td>"+
+			var tds = "<td><input type='checkbox'  name='checkedId'  value='"+result[i].id+"'/></td>"+
 			"<td>"+result[i].name+"</td>"+
 			"<td>"+result[i].note+"</td>"+
 			"<td>"+result[i].createdUser+"</td>"+

@@ -26,4 +26,11 @@ public class CatRoleController {
 		List<CatRole> list = catRoleService.findPageObjects();
 		return list;	//jackson,fastjson
 	}
+	
+	@RequestMapping("doDeleteObject")
+	@ResponseBody
+	public String doDeleteObject(String checkedIds){
+		catRoleService.deleteObject(checkedIds);
+		return "delete ok";
+	}
 }

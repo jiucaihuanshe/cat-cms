@@ -6,4 +6,5 @@ import com.cat.sys.pojo.CatRole;
 
 public interface CatRoleService {
 	List<CatRole> findPageObjects();
+	int deleteObject(String ids);
 }

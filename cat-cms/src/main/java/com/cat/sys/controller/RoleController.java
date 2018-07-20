@@ -15,16 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  */
 @Controller
-@RequestMapping("/role")
+@RequestMapping("/")
 public class RoleController {
 	@RequestMapping("/listUI")
 	public String listUI(){
-		return "/index";
-	}
-	
-	// /role/admin-role.html
-	@RequestMapping("admin-role")
-	public String role(){
-		return "admin-role";
+		return "/starter";
 	}
 }

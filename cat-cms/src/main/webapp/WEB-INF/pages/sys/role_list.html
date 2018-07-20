@@ -1,0 +1,77 @@
+<div class="row">
+	<div class="col-xs-12">
+		<div class="box">
+			<div class="box-header">
+				<h3 class="box-title">角色管理</h3>
+
+				<div class="box-tools">
+					<div class="input-group input-group-sm" style="width: 150px;">
+						<input type="text" name="table_search"
+							class="form-control pull-right" placeholder="Search">
+
+						<div class="input-group-btn">
+							<button type="submit" class="btn btn-default">
+								<i class="fa fa-search"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /.box-header -->
+			<div class="box-body table-responsive no-padding">
+				<table class="table table-hover">
+					<tr>
+						<th>ID</th>
+						<th>角色名称</th>
+						<th>角色备注</th>
+						<th>创建用户</th>
+						<th>修改用户</th>
+						<th>创建时间</th>
+						<th>修改时间</th>
+					</tr>
+					<tbody id="tbodyId">
+					</tbody>
+				</table>
+			</div>
+			<!-- /.box-body -->
+		</div>
+		<!-- /.box -->
+	</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		//页面加载完成以后，异步加载角色信息
+		doGetObjects();
+	});
+	function doGetObjects(){
+		var url = "role/doFindPageObjects.do";
+		var params = {pageCurrent:1};
+		$.getJSON(url,params,function(result){
+			console.log(result);
+			//将服务端返回的数据添填充在表格中
+			setTableBodyRows(result);
+		});
+	}
+	//4w(when,what,where,why)+h(how)
+	function setTableBodyRows(result){
+		//debugger;
+		var tBody = $("#tbodyId");
+		//迭代结果集
+		for(var i in result){//循环一次取一行记录
+			//构建tr对象
+			var tr = $("<tr></tr>");
+			//构建td对象
+			var tds = "<td>"+result[i].id+"</td>"+
+			"<td>"+result[i].name+"</td>"+
+			"<td>"+result[i].note+"</td>"+
+			"<td>"+result[i].createdUser+"</td>"+
+			"<td>"+result[i].modifiedUser+"</td>"+
+			"<td>"+result[i].createdTime+"</td>"+
+			"<td>"+result[i].modifiedTime+"</td>";
+			//将td追加到tr中
+			tr.append(tds);
+			//将tr追加到tbody中
+			tBody.append(tr);
+		}
+	}
+</script>

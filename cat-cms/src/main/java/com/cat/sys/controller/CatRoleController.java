@@ -15,6 +15,11 @@ import com.cat.sys.service.CatRoleService;
 public class CatRoleController {
 	@Autowired
 	private CatRoleService catRoleService;
+	@RequestMapping("listUI")
+	public String listUI(){
+		return "sys/role_list";
+	}
+	
 	@RequestMapping("doFindPageObjects")
 	@ResponseBody
 	public List<CatRole> doFindPageObjects(){

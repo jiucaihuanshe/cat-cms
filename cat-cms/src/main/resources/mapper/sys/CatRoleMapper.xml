@@ -2,8 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cat.sys.mapper.CatRoleMapper">
+	<sql id="whereSqlId">
+		<where>
+			<if test="name!=null and name!='' ">
+				name like concat("%",#{name},"%")
+			</if>
+		</where>
+	</sql>
+	<!-- concat() 方法用于连接两个或多个数组。 -->
 	<select id="findPageObjects" resultType="CatRole">
 		select * from cat_roles
+		<include refid="whereSqlId"/>
+		order by modifiedTime desc limit #{startIndex},#{pageSize}
+	</select>
+	<!-- 统计记录数(要根据此记录数计算总页数) -->
+	<select id="getRowCount" resultType="int">
+		select count(*) from cat_roles
+		<include refid="whereSqlId"/>
 	</select>
 	<delete id="deleteObject">
 		delete from cat_roles where id in
@@ -11,4 +26,13 @@
 		${item}
 		</foreach>
 	</delete>
+	<insert id="insertObject" parameterType="CatRole">
+		insert into cat_roles(id,name,note,createdTime,modifiedTime,createdUser,modifiedUser) values(null,#{name},#{note},now(),now(),#{createdUser},#{modifiedUser})
+	</insert>
+	<select id="findObjectById" resultType="CatRole">
+		select * from cat_roles where id=#{id}
+	</select>
+	<update id="updateObject" parameterType="CatRole">
+		update cat_roles set name =#{name},note=#{note},modifiedTime=now(),modifiedUser=#{modifiedUser} where id=#{id}
+	</update>
 </mapper>

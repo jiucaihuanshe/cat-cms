@@ -3,6 +3,9 @@ package com.cat.sys.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.cat.common.DateJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * 创建角色实体类
  * 这是个持久化对象
@@ -41,12 +44,14 @@ public class CatRole implements Serializable{
 	public void setNote(String note) {
 		this.note = note;
 	}
+	@JsonSerialize(using=DateJsonSerializer.class)
 	public Date getCreatedTime() {
 		return createdTime;
 	}
 	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
+	@JsonSerialize(using=DateJsonSerializer.class)
 	public Date getModifiedTime() {
 		return modifiedTime;
 	}

@@ -2,7 +2,7 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">角色管理</h3>
+				<h3 class="box-title">用户管理</h3>
 
 				<div class="box-tools">
 					<div class="input-group input-group-sm" style="width: 300px;">
@@ -25,17 +25,18 @@
 				<table class="table table-hover">
 					<tr>
 						<th>ID</th>
-						<th>角色名称</th>
-						<th>角色备注</th>
-						<th>创建用户</th>
-						<th>修改用户</th>
+						<th>用户名</th>
+						<th>邮箱</th>
+						<th>手机号</th>
+						<th>状态</th>
 						<th>创建时间</th>
 						<th>修改时间</th>
+						<th>操作</th>
 					</tr>
 					<tbody id="tbodyId">
 					</tbody>
 				</table>
-				<div id="pageId" class="box-footer clearfix">
+				<div id="pageId" class="box-footer clearfix"></div>
 				<script type="text/javascript">
 					$("#pageId").load("pageUI.do");
 				</script>
@@ -43,7 +44,6 @@
 			<!-- /.box-body -->
 		</div>
 		<!-- /.box -->
-		</div>
 	</div>
 </div>
 <script type="text/javascript">
@@ -58,6 +58,7 @@
 				doLoadEditPage);
 		$(".input-group-btn").on("click", ".btn-search", doQueryObject);
 	});
+	
 	/**处理查询按钮的点击事件*/
 	function doQueryObject() {
 		//重新初始化页码的值
@@ -124,7 +125,7 @@
 		});
 	}
 	function doGetObjects() {
-		var url = "role/doFindPageObjects.do";
+		var url = "user/doFindPageObjects.do";
 		var pageCurrent = $("#pageId").data("pageCurrent");
 		if(!pageCurrent)pageCurrent=1;
 		var params = {
@@ -137,6 +138,7 @@
 			if(result.state==1){
 				//将服务端返回的数据添填充在表格中
 				setTableBodyRows(result.data.records);
+				//分页
 				setPagination(result.data);
 			}else{
 				alert(result.message);
@@ -154,24 +156,14 @@
 			//构建tr对象
 			var tr = $("<tr></tr>");
 			//构建td对象
-			var tds = "<td><input type='checkbox'  name='checkedId'  value='"+result[i].id+"'/></td>"
-					+ "<td>"
-					+ result[i].name
-					+ "</td>"
-					+ "<td>"
-					+ result[i].note
-					+ "</td>"
-					+ "<td>"
-					+ result[i].createdUser
-					+ "</td>"
-					+ "<td>"
-					+ result[i].modifiedUser
-					+ "</td>"
-					+ "<td>"
-					+ result[i].createdTime
-					+ "</td>"
-					+ "<td>"
-					+ result[i].modifiedTime + "</td>";
+			var tds = "<td><input type='radio'  name='checkedId'  value='"+result[i].id+"'/></td>"+
+					"<td>"+ result[i].username+ "</td>"+
+					"<td>"+ result[i].email+ "</td>"+
+					"<td>"+ result[i].mobile+ "</td>"+
+					"<td>"+(result[i].valid?"启用":"禁用")+ "</td>"+
+					"<td>"+ result[i].createdTime+ "</td>"+
+					"<td>"+ result[i].modifiedTime + "</td>"+
+					"<td><button class='btn btn-defaultss' onClick='doValid(this)'>"+(result[i].valid?"禁用":"启用")+"</button></td>";
 			//将td追加到tr中
 			tr.append(tds);
 			//将tr追加到tbody中

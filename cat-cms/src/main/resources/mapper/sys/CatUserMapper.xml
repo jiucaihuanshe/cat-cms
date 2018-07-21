@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cat.sys.mapper.CatUserMapper">
+		<sql id="whereSqlId">
+		<where>
+			<if test="username!=null and username!='' ">
+				name like concat("%",#{username},"%")
+			</if>
+		</where>
+	</sql>
+	<!-- concat() 方法用于连接两个或多个数组。 -->
+	<select id="findPageObjects" resultType="CatUser">
+		select id,username,email,mobile,valid from cat_users
+		<include refid="whereSqlId"/>
+		order by modifiedTime desc limit #{startIndex},#{pageSize}
+	</select>
+	<!-- 统计记录数(要根据此记录数计算总页数) -->
+	<select id="getRowCount" resultType="int">
+		select count(*) from cat_users
+		<include refid="whereSqlId"/>
+	</select>
+</mapper>

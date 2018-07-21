@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/")
-public class RoleController {
+public class IndexController {
 	@RequestMapping("/listUI")
 	public String listUI(){
 		return "/starter";
+	}
+	@RequestMapping("pageUI")
+	public String pageUI(){
+		return "/common/page";
 	}
 }

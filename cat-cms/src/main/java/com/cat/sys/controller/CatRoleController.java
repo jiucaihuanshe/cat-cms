@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cat.common.vo.CheckBox;
 import com.cat.common.vo.JsonResult;
 import com.cat.common.vo.PageObject;
 import com.cat.sys.pojo.CatRole;
@@ -61,5 +62,11 @@ public class CatRoleController {
 		entity.setModifiedUser("admin");
 		catRoleService.updateObject(entity);
 		return new JsonResult(1, "update ok");
+	}
+	@RequestMapping("doFindObjects")
+	@ResponseBody
+	public JsonResult doFindObjects(){
+		List<CheckBox> list= catRoleService.findObjects();
+		return new JsonResult(1,"ok",list);
 	}
 }

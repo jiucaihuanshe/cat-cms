@@ -9,5 +9,6 @@
     <!-- 设置别名 -->
     <typeAliases>
     	<package name="com.cat.sys.pojo"/>
+    	<package name="com.cat.common.vo"/>
     </typeAliases>
 </configuration>

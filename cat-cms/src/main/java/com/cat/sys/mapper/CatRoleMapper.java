@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.cat.common.vo.CheckBox;
 import com.cat.sys.pojo.CatRole;
 
 /**
@@ -26,4 +27,5 @@ public interface CatRoleMapper {
 	int updateObject(CatRole entity);
 	//根据id查询角色信息
 	CatRole findObjectById(Integer id);
+	List<CheckBox> findObjects();
 }

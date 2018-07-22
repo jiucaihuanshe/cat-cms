@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cat.sys.mapper.CatMenuMapper">
+	<select id="findObjects" resultType="map">
+		select m.*,(select p.name from cat_menus p where p.id=m.parentId) as parentName from cat_menus m
+	</select>
+	<select id="hasChild" resultType="int">
+		select count(*) from cat_menus where parentId=#{menuId}
+	</select>
+	<delete id="deleteObject">
+		delete from cat_menus where id=#{id}
+	</delete>
+	<select id="findZtreeNodes" resultType="Node">
+		select id,name,parentId from cat_menus
+	</select>
+	<insert id="insertObject">
+		insert into cat_menus
+		(name,url,type,sort,note,parentId,permission,createdTime,modifiedTime,createdUser,modifiedUser)
+		values
+		(#{name},#{url},#{type},#{sort},#{note},#{parentId},#{permission},now(),now(),#{createdUser},#{modifiedUser})
+	</insert>
+	<!-- 父级菜单可能存在也可能不存在 自己表连接自己表，查询数据 -->
+	<select id="findObjectById" resultType="map">
+		select m.*,p.name parentName from cat_menus m left join cat_menus p on m.parentId=p.id where m.id=#{id}
+	</select>
+	<update id="updateObject">
+		update cat_menus
+		<set>
+			<if test="name!=null and name!=''">
+				name=#{name},
+			</if>
+			<if test="type!=null and type!=''">
+				type=#{type},
+			</if>
+			<if test="url!=null and url!=''">
+				url=#{url},
+			</if>
+			<if test="sort!=null and sort!=''">
+				sort=#{sort},
+			</if>
+			<if test="parentId!=null and parentId!=''">
+				parentId=#{parentId},
+			</if>
+			<if test="permission!=null and permission!=''">
+				permission=#{permission}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+</mapper>

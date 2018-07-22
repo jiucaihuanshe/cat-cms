@@ -5,7 +5,7 @@
 		<sql id="whereSqlId">
 		<where>
 			<if test="username!=null and username!='' ">
-				name like concat("%",#{username},"%")
+				username like concat("%",#{username},"%")
 			</if>
 		</where>
 	</sql>
@@ -20,4 +20,40 @@
 		select count(*) from cat_users
 		<include refid="whereSqlId"/>
 	</select>
+	<update id="validById">
+		update cat_users set valid=#{valid},modifiedTime=now(),modifiedUser=#{modifiedUser} where id=#{id}
+	</update>
+	<!-- 把用户写入到数据库时，拿到保存数据库主键的id值 -->
+	<insert id="insertObject" parameterType="CatUser" useGeneratedKeys="true" keyProperty="id">
+		insert into cat_users(username,password,email,mobile,salt,valid,createdUser,modifiedUser,createdTime,modifiedTime)
+		values(#{username},#{password},#{email},#{mobile},#{salt},#{valid},#{createdUser},#{modifiedUser},now(),now())
+	</insert>
+	<select id="findObjectById" resultType="CatUser">
+		select * from cat_users where id=#{id}
+	</select>
+	<update id="updateObject">
+		update cat_users
+		<set>
+			<if test="username!=null and username!=''">
+				username=#{username},
+			</if>
+			<if test="password!=null and password!=''">
+				password=#{password},
+			</if>
+			<if test="mobile!=null and mobile!=''">
+				mobile=#{mobile},
+			</if>
+			<if test="email!=null and email!=''">
+				email=#{email},
+			</if>
+			<if test="modifiedUser!=null and modifiedUser!=''">
+				modifiedUser=#{modifiedUser},
+			</if>
+			modifiedTime=now()
+		</set>
+		where id=#{id}
+	</update>
+	<delete id="deleteObject">
+		delete from cat_users where id=#{id}
+	</delete>
 </mapper>

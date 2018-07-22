@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cat.common.exception.ServiceException;
+import com.cat.common.vo.CheckBox;
 import com.cat.common.vo.PageObject;
 import com.cat.sys.mapper.CatRoleMapper;
 import com.cat.sys.pojo.CatRole;
@@ -67,5 +68,9 @@ public class CatRoleServiceImpl implements CatRoleService {
 			throw new ServiceException("id不能为空");
 		}
 		return catRoleMapper.updateObject(entity);
+	}
+	@Override
+	public List<CheckBox> findObjects() {
+		return catRoleMapper.findObjects();
 	}
 }

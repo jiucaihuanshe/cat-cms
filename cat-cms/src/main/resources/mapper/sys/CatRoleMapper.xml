@@ -35,4 +35,7 @@
 	<update id="updateObject" parameterType="CatRole">
 		update cat_roles set name =#{name},note=#{note},modifiedTime=now(),modifiedUser=#{modifiedUser} where id=#{id}
 	</update>
+	<select id="findObjects"  resultType="CheckBox">
+		select id,name from cat_roles;
+	</select>
 </mapper>

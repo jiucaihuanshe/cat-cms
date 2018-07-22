@@ -29,3 +29,18 @@ CREATE TABLE `cat_users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=INNODB  DEFAULT CHARSET=utf8;
 
+CREATE TABLE `cat_menus` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) DEFAULT NULL COMMENT '资源名称',
+  `url` VARCHAR(200) DEFAULT NULL COMMENT '资源URL',
+  `type` INT(11) DEFAULT NULL COMMENT '类型     1：菜单   2：按钮',
+  `sort` INT(11) DEFAULT NULL COMMENT '排序',
+  `note` VARCHAR(100) DEFAULT NULL COMMENT '备注',
+  `parentId` INT(11) DEFAULT NULL COMMENT '父菜单ID，一级菜单为0',
+  `permission` VARCHAR(500) DEFAULT NULL COMMENT '授权(如：role:create)',
+  `createdTime` DATETIME DEFAULT NULL COMMENT '创建时间',
+  `modifiedTime` DATETIME DEFAULT NULL COMMENT '修改时间',
+  `createdUser` VARCHAR(20) DEFAULT NULL COMMENT '创建用户',
+  `modifiedUser` VARCHAR(20) DEFAULT NULL COMMENT '修改用户',
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;

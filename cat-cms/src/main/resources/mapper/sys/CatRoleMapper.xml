@@ -26,7 +26,7 @@
 		${item}
 		</foreach>
 	</delete>
-	<insert id="insertObject" parameterType="CatRole">
+	<insert id="insertObject" parameterType="CatRole"  useGeneratedKeys="true" keyProperty="id">
 		insert into cat_roles(id,name,note,createdTime,modifiedTime,createdUser,modifiedUser) values(null,#{name},#{note},now(),now(),#{createdUser},#{modifiedUser})
 	</insert>
 	<select id="findObjectById" resultType="CatRole">

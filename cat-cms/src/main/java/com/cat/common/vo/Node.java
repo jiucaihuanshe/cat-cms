@@ -1,7 +1,7 @@
 package com.cat.common.vo;
 /**
  * 封装zTree上节点信息
- * @author lenovo
+ * @author wangchaofan
  *
  */
 public class Node {

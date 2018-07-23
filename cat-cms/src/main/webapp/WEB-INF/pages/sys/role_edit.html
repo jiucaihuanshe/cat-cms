@@ -23,6 +23,12 @@
 						placeholder="角色描述">
 				</div>
 			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">授权</label>
+				<div class="col-sm-10">
+						<ul id="menuTree" class="ztree"></ul>
+				</div>
+		  </div>
 		</div>
 		<!-- /.box-body -->
 		<div class="box-footer">
@@ -32,15 +38,46 @@
 		<!-- /.box-footer -->
 	</form>
 </div>
+<script type="text/javascript" src="bower_components/ztree/jquery.ztree.all.min.js"></script>
 <script type="text/javascript">
 	$(function(){
 		$(".box-footer").on("click",".btn-cancel",doCancel);
 		$(".box-footer").on("click",".btn-save",doSaveOrUpdate);
-		var id = $(".container-fluid").data("id");
-		if(id){
-			doFindObjectById(id);
-		}
+		
+		doLoadZTreeNodes();
 	});
+	var ztree; 
+	var setting = {
+		data : {
+		    simpleData : {
+				enable : true,
+				idKey : "id",  //节点数据中保存唯一标识的属性名称
+				pIdKey : "parentId",  //节点数据中保存其父节点唯一标识的属性名称
+				rootPId : null  //根节点id
+			}
+		},
+		check:{
+			enable:true,
+			nocheckInherit:true
+		}
+	}
+	/**加载zTree节点*/
+	function doLoadZTreeNodes(){
+	  	var url ='menu/treeUI.do';
+	  	$.getJSON(url,function(result){
+	  		if(result.state==1){
+	  			ztree = $.fn.zTree.init($("#menuTree"),setting,result.data);
+	  		//获得绑定的id值(点击列表页面时绑定的值)
+	  			var id = $(".container-fluid").data("id");
+	  		//假如id有值则说明是更新,此时根据id进行记录查找
+	  			if(id){
+	  				doFindObjectById(id);
+	  			}
+	  		}else{
+	  			alert(result.message);
+	  		}
+	  	})
+	  }
 	function doFindObjectById(id){
 		var url = "role/doFindObjectById.do";
 		var params = {"id":id};
@@ -53,8 +90,18 @@
 		});
 	}
 	function doInitEditForm(result){
-		$("#nameId").val(result.name);
-		$("#noteId").val(result.note);
+		//console.log(result);
+		$("#nameId").val(result.role.name);
+		$("#noteId").val(result.role.note);
+		//展开所有节点
+		ztree.expandAll(true);
+		//勾选角色所拥有的菜单
+		var menuIds = result.menuIds;
+		for(var i=0; i<menuIds.length; i++) {
+			//获取key为id值为menuIds[i]的节点
+			var node = ztree.getNodeByParam("id",menuIds[i]);
+			ztree.checkNode(node, true, false);
+		}
 	}
 	function doCancel(){
 		$(".container-fluid").load("role/listUI.do");
@@ -66,6 +113,7 @@
 		//2.异步提交
 		//获取当前页面绑定的id值
 		var id = $(".container-fluid").data("id");
+		console.log(id);
 		//假如id有值说明是修改,此时在参数中添加id值(k/v)
 		if(id)params.id=id;
 		//根据id值设置要执行的url
@@ -81,11 +129,21 @@
 			}
 		});
 	}
+	//获取表单数据
 	function getFormData(){
+		//json格式的javascript对象
 		var params = {
 				"name":$("#nameId").val(),
 				"note":$("#noteId").val()
 		};
+		//获取选中的授权
+		var nodes = ztree.getCheckedNodes(true);
+		console.log(nodes);
+		var menuIds =[];
+		for(var i=0;i<nodes.length;i++){
+			menuIds.push(nodes[i].id);
+		}
+		params.menuIds=menuIds.toString();
 		return params;
 	}
 </script>

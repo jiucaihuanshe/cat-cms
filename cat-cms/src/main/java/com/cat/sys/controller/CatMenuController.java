@@ -44,7 +44,6 @@ public class CatMenuController {
 	@ResponseBody
 	public JsonResult treeUI(){
 		List<Node> list = catMenuService.findZtreeNodes();
-		System.out.println(list);
 		return new JsonResult(1, "ok",list);
 	}
 	@RequestMapping("doInsertObject")

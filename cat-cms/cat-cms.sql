@@ -29,6 +29,12 @@ CREATE TABLE `cat_users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=INNODB  DEFAULT CHARSET=utf8;
 
+CREATE TABLE `cat_roles_users` (
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `role_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`,`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `cat_menus` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) DEFAULT NULL COMMENT '资源名称',
@@ -44,3 +50,9 @@ CREATE TABLE `cat_menus` (
   `modifiedUser` VARCHAR(20) DEFAULT NULL COMMENT '修改用户',
   PRIMARY KEY (`id`)
 ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+
+create table cat_roles_menus(
+	role_id int,
+	menu_id int,
+	primary key(role_id,menu_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

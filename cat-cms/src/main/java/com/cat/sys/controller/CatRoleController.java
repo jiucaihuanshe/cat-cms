@@ -1,6 +1,7 @@
 package com.cat.sys.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,23 +45,23 @@ public class CatRoleController {
 	
 	@RequestMapping("doInsertObject")
 	@ResponseBody
-	public JsonResult doInsertObject(CatRole entity){
-		catRoleService.insertObject(entity);
+	public JsonResult doInsertObject(CatRole entity,String menuIds){
+		catRoleService.insertObject(entity,menuIds);
 		return new JsonResult(1, "insert ok");
 	}
 	
 	@RequestMapping("doFindObjectById")
 	@ResponseBody
 	public JsonResult doFindObjectById(Integer id){
-		CatRole catRole = catRoleService.findObjectById(id);
-		return new JsonResult(1, "ok", catRole);
+		Map<String, Object> map = catRoleService.findObjectById(id);
+		return new JsonResult(1, "ok", map);
 	}
 	
 	@RequestMapping("doUpdateObject")
 	@ResponseBody
-	public JsonResult doUpdateObject(CatRole entity){
+	public JsonResult doUpdateObject(CatRole entity,String menuIds){
 		entity.setModifiedUser("admin");
-		catRoleService.updateObject(entity);
+		catRoleService.updateObject(entity,menuIds);
 		return new JsonResult(1, "update ok");
 	}
 	@RequestMapping("doFindObjects")

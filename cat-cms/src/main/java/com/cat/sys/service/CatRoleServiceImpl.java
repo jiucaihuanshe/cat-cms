@@ -1,6 +1,8 @@
 package com.cat.sys.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +11,14 @@ import com.cat.common.exception.ServiceException;
 import com.cat.common.vo.CheckBox;
 import com.cat.common.vo.PageObject;
 import com.cat.sys.mapper.CatRoleMapper;
+import com.cat.sys.mapper.CatRoleMenuMapper;
 import com.cat.sys.pojo.CatRole;
 @Service
 public class CatRoleServiceImpl implements CatRoleService {
 	@Autowired
 	private CatRoleMapper catRoleMapper;
+	@Autowired
+	private CatRoleMenuMapper catRoleMenuMapper;
 	@Override
 	public PageObject<CatRole> findPageObjects(Integer pageCurrent,String name) {
 		if(pageCurrent<1)throw new ServiceException("当前页码不能为负数");
@@ -46,28 +51,45 @@ public class CatRoleServiceImpl implements CatRoleService {
 		//2.对参数数据进行转换
 		String[] checkedIds = ids.split(",");
 		//3.执行删除操作
-		return catRoleMapper.deleteObject(checkedIds);
+		int rows = catRoleMapper.deleteObject(checkedIds);
+		catRoleMenuMapper.deleteObjects(checkedIds);
+		return rows;
 	}
 	@Override
-	public int insertObject(CatRole entity) {
-		return catRoleMapper.insertObject(entity);
+	public int insertObject(CatRole entity,String menuIds) {
+		//判断新增的名称是否已存在
+		if("admin".equals(entity.getName())){
+			throw new ServiceException("role's name already exists");
+		}
+		int rows= catRoleMapper.insertObject(entity);
+		catRoleMenuMapper.insertObject(entity.getId(), menuIds.split(","));
+		return rows;
 	}
 	@Override
-	public CatRole findObjectById(Integer id) {
+	public Map<String, Object> findObjectById(Integer id) {
 		if(id==null){
 			throw new ServiceException("id is null");
 		}
-		return catRoleMapper.findObjectById(id);
+		CatRole role = catRoleMapper.findObjectById(id);
+		List<Integer> menuIds = catRoleMenuMapper.findMenuIdsByRoleId(id);
+		Map<String, Object> map = new HashMap<>();
+		map.put("role", role);
+		map.put("menuIds", menuIds);
+		return map;
 	}
 	@Override
-	public int updateObject(CatRole entity) {
+	public int updateObject(CatRole entity,String menuIds) {
 		if(entity==null){
 			throw new ServiceException("更新的对象不能为空");
 		}
 		if(entity.getId()==null){
 			throw new ServiceException("id不能为空");
 		}
-		return catRoleMapper.updateObject(entity);
+		int rows = catRoleMapper.updateObject(entity);
+		
+		catRoleMenuMapper.deleteObject(entity.getId());
+		catRoleMenuMapper.insertObject(entity.getId(), menuIds.split(","));
+		return rows;
 	}
 	@Override
 	public List<CheckBox> findObjects() {

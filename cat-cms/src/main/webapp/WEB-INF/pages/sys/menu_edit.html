@@ -81,7 +81,7 @@
 <script type="text/javascript">
 	$(function() {
 		$(".box-footer").on("click", ".btn-cancel", doCancel);
-		$("#menuLayer").on("click", ".btn-cancle", doCancle);
+		$("#menuLayer").on("click", ".btn-cancle", doHideTree);
 		$(".box-footer").on("click", ".btn-save", doSaveOrUpdate);
 		$(".form-horizontal").on("click","#parentId",doLoadZTreeNodes);
 		$('#menuLayer').on('click','.btn-confirm',doSetSelectedNode);
@@ -121,10 +121,9 @@
 		 $('#parentId').val(node.name);
 		 $('.form-horizontal').data('parentId',node.id);
 	}
-	function doCancle() {
-		$(".container-fluid").load("menu/editUI.do");
-		//$(".container-fluid").removeData("id");
-	}
+	function doHideTree(){
+		  $('#menuLayer').css('display','none');
+	  }
 	function doCancel() {
 		$(".container-fluid").load("menu/listUI.do");
 		$(".container-fluid").removeData("id");

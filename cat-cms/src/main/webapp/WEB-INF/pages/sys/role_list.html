@@ -86,18 +86,15 @@
 		//load函数异步加载新的内容,
 		//后续会替换原有位置内容
 	}
+	/*获取选中的角色列表中的记录id*/
 	function getCheckedIds() {
-		var checkedIds = "";
+		var checkedIds = [];
 		//获取所有tbody中名字为checkedId的input元素
 		//迭代这些input元素
 		$("tbody input[name='checkedId']").each(function() {
 			//假如这个input的checked属性值为true
 			if ($(this).prop("checked")) {
-				if (checkedIds.length == 0) {
-					checkedIds += $(this).val();
-				} else {
-					checkedIds += "," + $(this).val();
-				}
+				checkedIds.push($(this).val());
 			}
 		});
 		return checkedIds;
@@ -112,7 +109,7 @@
 		//2.将这些id值异步传输到服务端,执行删除操作
 		var url = "role/doDeleteObject.do";
 		var params = {
-			"checkedIds" : checkedIds
+			"checkedIds" : checkedIds.toString()
 		};
 		$.post(url, params, function(result) {
 			if(result.state==1){

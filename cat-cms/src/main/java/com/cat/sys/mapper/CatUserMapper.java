@@ -20,4 +20,8 @@ public interface CatUserMapper {
 	int updateObject(CatUser entity);
 	//删除
 	int deleteObject(Integer id);
+	/**根据用户id查找用户角色权限信息(对资源的访问)*/
+	List<String> findUserPermissions(int userId);
+	//根据用户名查找用户信息
+	CatUser findObjectByName(String username);
 }

@@ -61,4 +61,55 @@
 		<property name="basePackage" value="com.cat.sys.mapper"/>
 	</bean>
     
+    <!-- ******Spring整合Shiro的配置********* -->
+    <!-- 自定义Realm -->
+    <bean id="userRealm" class="com.cat.sys.service.realm.ShiroUserRealm">
+    	<!-- 配置凭证算法匹配器 -->
+    	<property name="credentialsMatcher">
+    		<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+    			<property name="hashAlgorithmName" value="MD5"/>
+    			<!-- <property name="hashIterations" value="1024"/> -->
+    		</bean>
+    	</property>
+    </bean>
+    <!-- 配置shiro安全管理器,是shiro框架的核心安全管理器 -->
+     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+         <property name="realm" ref="userRealm"></property>
+     </bean>
+    <!-- shiro工厂bean配置 -->
+     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+         <!-- shiro的核心安全接口 -->
+         <property name="securityManager" ref="securityManager"/>
+          <!-- 要求登录时的连接 -->
+        <property name="loginUrl" value="/loginUI.do"></property>
+         <!-- 登录成功后要跳转的连接(此处已经在登录中处理了) -->
+         <!-- <property name="successUrl" value="/index.jsp"></property> -->
+         <!-- 访问未对其授权的资源时,要跳转的连接 
+         <property name="unauthorizedUrl" value="/default.html"></property>-->
+         <!-- shiro连接约束配置 -->
+         <property name="filterChainDefinitions">
+             <value>
+                 <!-- 对静态资源设置允许匿名访问 -->
+                 /bower_components/** = anon
+                 /build/** = anon
+                 /dist/** = anon
+                 /plugins/** = anon
+                 <!-- 可匿名访问路径，例如：验证码、登录连接、退出连接等 -->
+                 /doLogin.do = anon
+                 <!-- 退出 -->
+                 /doLogout.do = logout  <!-- 会调用Subject的logout方法,此方法会将session清空 -->
+                 <!-- 剩余其他路径，必须认证通过才可以访问 -->
+                 /** = authc<!-- authc -->
+             </value>
+         </property>
+     </bean>
+	<!--Shiro生命周期处理器,Shiro框架会负责Shiro各种组件的生命周期-->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!--启用shiro注解权限检查-->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+	    depends-on="lifecycleBeanPostProcessor"/>
+	<bean  class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+	    <property name="securityManager" ref="securityManager"/>
+	</bean>
+    
 </beans>

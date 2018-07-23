@@ -56,4 +56,16 @@
 	<delete id="deleteObject">
 		delete from cat_users where id=#{id}
 	</delete>
+	<!-- 根据用户id查询权限信息 -->
+	<select id="findUserPermissions" resultType="string">
+		select cm.permission from cat_roles_users cru
+		join cat_roles_menus crm
+		join cat_menus cm
+		on cru.role_id=crm.role_id and crm.menu_id=cm.id
+		where cru.user_id=#{userId}
+	</select>
+	<!-- 根据用户名查找用户信息 -->
+	<select id="findObjectByName" resultType="CatUser">
+      select * from cat_users  where username=#{username}
+   </select>
 </mapper>

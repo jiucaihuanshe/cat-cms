@@ -3,7 +3,10 @@ package com.cat.sys.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -58,6 +61,23 @@ public class CatUserServiceImpl implements CatUserService {
 	}
 	@Override
 	public int insertObject(CatUser entity, String roleIds) {
+		String pwd = entity.getPassword();
+		String username = entity.getUsername();
+		if(StringUtils.isEmpty(username)){
+			throw new ServiceException("用户名不能为空");
+		}
+		if(StringUtils.isEmpty(pwd)){
+			throw new ServiceException("密码不能为空");
+		}
+		//将用户数据的密码转化为ByteSource对象
+		ByteSource source = ByteSource.Util.bytes(pwd.getBytes());
+		//创建一个随机盐值(采用盐值加密会更加的安全)
+		String salt = UUID.randomUUID().toString();
+		//对密码，盐值进行统一加密,产生一个密文对象
+		SimpleHash simpleHash = new SimpleHash("MD5", source, salt);
+		//设置密码与盐值到entity对象
+		entity.setPassword(simpleHash.toHex());
+		entity.setSalt(salt);
 		//1.保存用户信息
 		int rows = catUserMapper.insertObject(entity);
 		//2.保存关系数据(用户与角色关系数据)
@@ -88,6 +108,23 @@ public class CatUserServiceImpl implements CatUserService {
 		if(StringUtils.isEmpty(roleIds)){
 			throw new ServiceException("用户角色不能为空");
 		}
+		String pwd = entity.getPassword();
+		String username = entity.getUsername();
+		if(StringUtils.isEmpty(username)){
+			throw new ServiceException("用户名不能为空");
+		}
+		if(StringUtils.isEmpty(pwd)){
+			throw new ServiceException("密码不能为空");
+		}
+		//将用户数据的密码转化为ByteSource对象
+		ByteSource source = ByteSource.Util.bytes(pwd.getBytes());
+		//创建一个随机盐值(采用盐值加密会更加的安全)
+		String salt = UUID.randomUUID().toString();
+		//对密码，盐值进行统一加密,产生一个密文对象
+		SimpleHash simpleHash = new SimpleHash("MD5", source, salt);
+		//设置密码与盐值到entity对象
+		entity.setPassword(simpleHash.toHex());
+		entity.setSalt(salt);
 		//2.更新数据
 		//2.1更新用户基本信息
 		int rows = catUserMapper.updateObject(entity);

@@ -49,6 +49,9 @@
 			<if test="modifiedUser!=null and modifiedUser!=''">
 				modifiedUser=#{modifiedUser},
 			</if>
+			<if test="salt!=null and salt!=''">
+				salt=#{salt},
+			</if>
 			modifiedTime=now()
 		</set>
 		where id=#{id}

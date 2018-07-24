@@ -87,14 +87,14 @@
 	  var url = "doLogin.do";
 	  $.post(url,params,function(result){
 		  if(result.state==1){
-				//跳转到indexUI对应的页面
+				//跳转到indexUI对应的页面 在其后加入随机数，是为了避免浏览器对listUI.do链接(url)进行缓存
 			  location.href="listUI.do?t="+Math.random();
 		  }else{
 			  $(".login-box-msg").html(result.message);
 		  }
-		  return false;
+		  return false;//响应结束了
 	  });
-	  return false;
+	  return false;//为了请求结束后，不在发起请求了，避免重复提交
   }
 </script>
 </body>

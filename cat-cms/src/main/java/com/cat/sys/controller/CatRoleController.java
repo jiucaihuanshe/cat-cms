@@ -3,6 +3,7 @@ package com.cat.sys.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +37,7 @@ public class CatRoleController {
 		return new JsonResult(1, "query ok", pageObject);	//jackson,fastjson
 	}
 	
+	//@RequiresPermissions("sys:role:delete")
 	@RequestMapping("doDeleteObject")
 	@ResponseBody
 	public JsonResult doDeleteObject(String checkedIds){
@@ -50,6 +52,7 @@ public class CatRoleController {
 		return new JsonResult(1, "insert ok");
 	}
 	
+	@RequiresPermissions("sys:role:create")
 	@RequestMapping("doFindObjectById")
 	@ResponseBody
 	public JsonResult doFindObjectById(Integer id){
@@ -57,6 +60,7 @@ public class CatRoleController {
 		return new JsonResult(1, "ok", map);
 	}
 	
+	@RequiresPermissions("sys:role:update")
 	@RequestMapping("doUpdateObject")
 	@ResponseBody
 	public JsonResult doUpdateObject(CatRole entity,String menuIds){

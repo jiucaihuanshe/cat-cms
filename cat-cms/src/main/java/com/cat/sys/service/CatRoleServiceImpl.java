@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import com.cat.common.vo.PageObject;
 import com.cat.sys.mapper.CatRoleMapper;
 import com.cat.sys.mapper.CatRoleMenuMapper;
 import com.cat.sys.pojo.CatRole;
+import com.cat.sys.pojo.CatUser;
 @Service
 public class CatRoleServiceImpl implements CatRoleService {
 	@Autowired
@@ -24,7 +26,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 		if(pageCurrent<1)throw new ServiceException("当前页码不能为负数");
 		//1.获取当前页数据
 		//1.1定义每页最多显示3条记录
-		int pageSize=3;
+		int pageSize=10;
 		//1.2计算每页查询的起始位置
 		int startIndex= (pageCurrent-1)*pageSize;
 		List<CatRole> list = catRoleMapper.findPageObjects(name, startIndex, pageSize);
@@ -57,7 +59,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 	}
 	@Override
 	public int insertObject(CatRole entity,String menuIds) {
-		//判断新增的名称是否已存在
+		//判断新增的名称是否已存在 ??
 		if("admin".equals(entity.getName())){
 			throw new ServiceException("role's name already exists");
 		}

@@ -9,6 +9,7 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.cat.common.exception.ServiceException;
@@ -16,7 +17,12 @@ import com.cat.common.vo.PageObject;
 import com.cat.sys.mapper.CatUserMapper;
 import com.cat.sys.mapper.CatUserRoleMapper;
 import com.cat.sys.pojo.CatUser;
-
+/**
+ * 假如@Transactional这个注解用在了类的上面，类中的所有方法都要进行默认的事务处理
+ * @author wangchaofan
+ *
+ */
+@Transactional
 @Service
 public class CatUserServiceImpl implements CatUserService {
 	@Autowired
@@ -28,7 +34,7 @@ public class CatUserServiceImpl implements CatUserService {
 		if(pageCurrent<1)throw new ServiceException("当前页码不能为负数");
 		//1.获取当前页数据
 		//1.1定义每页最多显示3条记录
-		int pageSize=3;
+		int pageSize=10;
 		//1.2计算每页查询的起始位置
 		int startIndex= (pageCurrent-1)*pageSize;
 		List<CatUser> list = catUserMapper.findPageObjects(username, startIndex, pageSize);

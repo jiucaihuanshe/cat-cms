@@ -38,7 +38,7 @@ public class ShiroUserRealm extends AuthorizingRealm{
 		List<String> permsList = new ArrayList<>();
 		/**根据用户id查找用户角色权限信息(对资源的访问)*/
 		permsList = catUserMapper.findUserPermissions(userId);
-		//用户权限列表
+		//用户权限列表 去重复的权限
 		Set<String> parmsSet = new HashSet<>();
 		for(String perm : permsList){
 			if(perm!=null && !("".equals(perm))){

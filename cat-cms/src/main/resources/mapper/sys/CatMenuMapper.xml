@@ -43,7 +43,10 @@
 				parentId=#{parentId},
 			</if>
 			<if test="permission!=null and permission!=''">
-				permission=#{permission}
+				permission=#{permission},
+			</if>
+			<if test="modifiedUser!=null and modifiedUser!=''">
+				modifiedUser=#{modifiedUser}
 			</if>
 		</set>
 		where id=#{id}

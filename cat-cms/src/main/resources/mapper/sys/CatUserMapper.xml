@@ -11,7 +11,7 @@
 	</sql>
 	<!-- concat() 方法用于连接两个或多个数组。 -->
 	<select id="findPageObjects" resultType="CatUser">
-		select id,username,email,mobile,valid from cat_users
+		select id,username,email,mobile,valid,createdTime,modifiedTime from cat_users
 		<include refid="whereSqlId"/>
 		order by modifiedTime desc limit #{startIndex},#{pageSize}
 	</select>

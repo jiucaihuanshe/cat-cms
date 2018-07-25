@@ -3,6 +3,9 @@ package com.cat.sys.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.cat.common.DateJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public class CatUser implements Serializable {
 	private static final long serialVersionUID = -2669242081245762170L;
 	private Integer id;
@@ -58,6 +61,7 @@ public class CatUser implements Serializable {
 	public void setValid(Integer valid) {
 		this.valid = valid;
 	}
+	@JsonSerialize(using=DateJsonSerializer.class)
 	public Date getCreatedTime() {
 		return createdTime;
 	}
@@ -76,6 +80,7 @@ public class CatUser implements Serializable {
 	public void setModifiedUser(String modifiedUser) {
 		this.modifiedUser = modifiedUser;
 	}
+	@JsonSerialize(using=DateJsonSerializer.class)
 	public Date getModifiedTime() {
 		return modifiedTime;
 	}

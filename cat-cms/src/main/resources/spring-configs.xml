@@ -75,6 +75,12 @@
     <!-- 配置shiro安全管理器,是shiro框架的核心安全管理器 -->
      <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
          <property name="realm" ref="userRealm"></property>
+         
+        <!-- 记住我 设置securityManager安全管理器的rememberMeManager -->
+         <property name="rememberMeManager" ref="rememberMeManager"/>
+        <!--  <property name="cacheManager" ref="shiroCacheManager"></property>
+          注入session管理器
+        <property name="sessionManager" ref="sessionManager" /> -->
      </bean>
     <!-- shiro工厂bean配置 -->
      <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -99,7 +105,11 @@
                  <!-- 退出 -->
                  /doLogout.do = logout  <!-- 会调用Subject的logout方法,此方法会将session清空 -->
                  <!-- 剩余其他路径，必须认证通过才可以访问 -->
-                 /** = authc<!-- authc -->
+                 /login.html = authc
+                 <!-- /** = user 表示访问该地址的用户是身份验证通过或RememberMe登录的都可以 -->
+                /** = user
+                 
+                <!-- /** = authc -->
              </value>
          </property>
      </bean>
@@ -111,5 +121,26 @@
 	<bean  class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
 	    <property name="securityManager" ref="securityManager"/>
 	</bean>
-    
+	<!-- rememberMe管理器 -->
+	<bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<!-- rememberMeCookie：即记住我的Cookie，保存时长10天；rememberMe管理器，cipherKey是加密rememberMe Cookie的密钥；默认AES算法 -->
+		<property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}" />
+		<property name="cookie" ref="rememberMeCookie"/>
+	</bean>
+	<!-- remenberMe配置 -->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+    	<!-- rememberMe是cookie的名字 -->
+        <constructor-arg value="rememberMe" />
+		<property name="httpOnly" value="true"/> <!-- 只支持http -->
+		<property name="maxAge" value="864000"/> <!-- 记住密码10天 -->
+	</bean>
+
+	<!-- *****Spring声明式事务处理***** -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!--设置注解驱动的事务管理 -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	
 </beans>

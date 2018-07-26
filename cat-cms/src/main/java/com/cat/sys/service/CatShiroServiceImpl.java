@@ -7,6 +7,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cat.common.exception.ServiceException;
 import com.cat.sys.mapper.CatUserMapper;
@@ -17,10 +18,13 @@ import com.cat.sys.pojo.CatUser;
  * @author wangchaofan
  *
  */
+@Transactional
 @Service
 public class CatShiroServiceImpl implements CatShiroService {
 	@Autowired
 	private CatUserMapper CatUserMapper;
+	//只读事务比update readOnly=false 性能要高
+	@Transactional(readOnly=true)
 	@Override
 	public void login(String username, String password) {
 		//1.获取Shiro中的Subject(主体)对象

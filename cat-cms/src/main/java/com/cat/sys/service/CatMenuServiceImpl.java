@@ -5,12 +5,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cat.common.exception.ServiceException;
 import com.cat.common.vo.Node;
 import com.cat.sys.mapper.CatMenuMapper;
 import com.cat.sys.pojo.CatMenu;
-
+@Transactional
 @Service
 public class CatMenuServiceImpl implements CatMenuService {
 	@Autowired
@@ -19,6 +21,7 @@ public class CatMenuServiceImpl implements CatMenuService {
 	public List<Map<String, Object>> findObjects() {
 		return catMenuMapper.findObjects();
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public void deleteObject(Integer menuId) {
 		if(menuId==null){
@@ -29,10 +32,12 @@ public class CatMenuServiceImpl implements CatMenuService {
 		int i = catMenuMapper.deleteObject(menuId);
 		if(i!=1)throw new ServiceException("删除菜单失败！");
 	}
+	@Transactional(readOnly=true)
 	@Override
 	public List<Node> findZtreeNodes() {
 		return catMenuMapper.findZtreeNodes();
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int insertObject(CatMenu entity) {
 		if(entity==null){
@@ -44,6 +49,7 @@ public class CatMenuServiceImpl implements CatMenuService {
 		}
 		return rows;
 	}
+	@Transactional(readOnly=true)
 	@Override
 	public Map<String, Object> findObjectById(Integer id) {
 		if(id==null||id<0){
@@ -52,6 +58,7 @@ public class CatMenuServiceImpl implements CatMenuService {
 		Map<String, Object> map = catMenuMapper.findObjectById(id);
 		return map;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int updateObject(CatMenu entity) {
 		if(entity==null){

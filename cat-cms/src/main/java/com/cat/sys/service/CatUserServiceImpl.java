@@ -9,6 +9,7 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -29,6 +30,7 @@ public class CatUserServiceImpl implements CatUserService {
 	private CatUserMapper catUserMapper;
 	@Autowired
 	private CatUserRoleMapper catUserRoleMapper;
+	@Transactional(readOnly=true)
 	@Override
 	public PageObject<CatUser> findPageObjects(Integer pageCurrent, String username) {
 		if(pageCurrent<1)throw new ServiceException("当前页码不能为负数");
@@ -52,6 +54,7 @@ public class CatUserServiceImpl implements CatUserService {
 		pageObject.setPageCurrent(pageCurrent);
 		return pageObject;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int validById(Integer id, Integer valid, String modifiedUser) {
 		//1.参数有效性验证
@@ -65,6 +68,7 @@ public class CatUserServiceImpl implements CatUserService {
 		int rows = catUserMapper.validById(id, valid, modifiedUser);
 		return rows;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int insertObject(CatUser entity, String roleIds) {
 		String pwd = entity.getPassword();
@@ -90,6 +94,7 @@ public class CatUserServiceImpl implements CatUserService {
 		catUserRoleMapper.insertObject(entity.getId(), roleIds.split(","));
 		return rows;
 	}
+	@Transactional(readOnly=true)
 	@Override
 	public Map<String, Object> findObjectById(Integer id) {
 		//查询用户信息
@@ -102,6 +107,11 @@ public class CatUserServiceImpl implements CatUserService {
 		map.put("roleIds", roleIds);
 		return map;
 	}
+	/**
+	 * 事务的传播特性
+	 * Propagation.REQUIRED 表示此方法假如被其它的事务方法调用,则它会运行在那个已经存在的事务中
+	 */
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int updateObject(CatUser entity, String roleIds) {
 		//1.参数业务验证
@@ -135,6 +145,7 @@ public class CatUserServiceImpl implements CatUserService {
 		catUserRoleMapper.insertObject(entity.getId(), roleIds.split(","));
 		return rows;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int deleteObject(Integer id) {
 		if(id==null||id<0){

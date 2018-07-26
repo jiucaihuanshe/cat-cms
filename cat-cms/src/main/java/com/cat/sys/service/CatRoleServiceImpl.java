@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cat.common.exception.ServiceException;
 import com.cat.common.vo.CheckBox;
@@ -15,12 +17,14 @@ import com.cat.sys.mapper.CatRoleMapper;
 import com.cat.sys.mapper.CatRoleMenuMapper;
 import com.cat.sys.pojo.CatRole;
 import com.cat.sys.pojo.CatUser;
+@Transactional
 @Service
 public class CatRoleServiceImpl implements CatRoleService {
 	@Autowired
 	private CatRoleMapper catRoleMapper;
 	@Autowired
 	private CatRoleMenuMapper catRoleMenuMapper;
+	@Transactional(readOnly=true)
 	@Override
 	public PageObject<CatRole> findPageObjects(Integer pageCurrent,String name) {
 		if(pageCurrent<1)throw new ServiceException("当前页码不能为负数");
@@ -44,6 +48,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 		pageObject.setPageCurrent(pageCurrent);
 		return pageObject;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int deleteObject(String ids) {
 		//1.验证参数有效性
@@ -57,6 +62,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 		catRoleMenuMapper.deleteObjects(checkedIds);
 		return rows;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int insertObject(CatRole entity,String menuIds) {
 		//判断新增的名称是否已存在 ??
@@ -67,6 +73,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 		catRoleMenuMapper.insertObject(entity.getId(), menuIds.split(","));
 		return rows;
 	}
+	@Transactional(readOnly=true)
 	@Override
 	public Map<String, Object> findObjectById(Integer id) {
 		if(id==null){
@@ -79,6 +86,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 		map.put("menuIds", menuIds);
 		return map;
 	}
+	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
 	public int updateObject(CatRole entity,String menuIds) {
 		if(entity==null){
@@ -93,6 +101,7 @@ public class CatRoleServiceImpl implements CatRoleService {
 		catRoleMenuMapper.insertObject(entity.getId(), menuIds.split(","));
 		return rows;
 	}
+	@Transactional(readOnly=true)
 	@Override
 	public List<CheckBox> findObjects() {
 		return catRoleMapper.findObjects();

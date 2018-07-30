@@ -36,6 +36,14 @@
         <property name="prefix" value="/WEB-INF/pages/" />
         <property name="suffix" value=".html"></property>
     </bean>
+    <!--引入外部配置文件  由于后期可能会引入多个配置文件 所以采用list的形式  -->
+	<bean id="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:/redis.properties</value>
+			</list>
+		</property>
+	</bean>
     <!-- 加载properties文件,配置DRUID数据源 -->
     <util:properties id="cfg" location="classpath:config.properties"/>
     <!--配置DruidDataSource连接池 -->

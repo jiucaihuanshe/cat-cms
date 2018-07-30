@@ -1,25 +1,54 @@
 package com.cat.sys.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.cat.common.exception.ServiceException;
 import com.cat.common.vo.Node;
 import com.cat.sys.mapper.CatMenuMapper;
 import com.cat.sys.pojo.CatMenu;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import redis.clients.jedis.JedisCluster;
 @Transactional
 @Service
 public class CatMenuServiceImpl implements CatMenuService {
 	@Autowired
 	private CatMenuMapper catMenuMapper;
+	@Autowired
+	private JedisCluster jedisCluster;
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 	@Override
 	public List<Map<String, Object>> findObjects() {
-		return catMenuMapper.findObjects();
+		//redis缓存使用
+		String key = "MENU_ID";
+		String dataJSON = jedisCluster.get(key);
+		List<Map<String, Object>> menuList = new ArrayList<>();
+		try {
+			if(StringUtils.isEmpty(dataJSON)){
+				//证明空
+				menuList = catMenuMapper.findObjects();
+				System.out.println(menuList);
+				String jsonResult = objectMapper.writeValueAsString(menuList);
+				jedisCluster.set(key, jsonResult);
+			}else{
+				Map<String, Object>[] maps = objectMapper.readValue(dataJSON, Map[].class);
+				for(Map<String, Object> map : maps){
+					menuList.add(map);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return menuList;
 	}
 	@Transactional(propagation=Propagation.REQUIRED)
 	@Override
